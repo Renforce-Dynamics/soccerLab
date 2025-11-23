@@ -55,8 +55,9 @@ from isaaclab.utils.math import axis_angle_from_quat, quat_conjugate, quat_mul, 
 ##
 # Pre-defined configs
 ##
-from whole_body_tracking.robots.g1 import G1_CYLINDER_CFG
-
+from robotlib.loader import load_robot_cfg
+robot_type = "g1_29d"
+robot_cfg, motion_align_cfg = load_robot_cfg(robot_type)
 
 @configclass
 class ReplayMotionsSceneCfg(InteractiveSceneCfg):
@@ -75,7 +76,7 @@ class ReplayMotionsSceneCfg(InteractiveSceneCfg):
     )
 
     # articulation
-    robot: ArticulationCfg = G1_CYLINDER_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
+    robot: ArticulationCfg = robot_cfg.replace(prim_path="{ENV_REGEX_NS}/Robot")
 
 
 class MotionLoader:
