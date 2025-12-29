@@ -12,10 +12,10 @@ import soccerLab.terrain as terrain_gen
 from soccerLab.soccer_game_cfg import SoccerGameCfg
 
 SOCCER_GROUND_CFG = terrain_gen.TerrainGeneratorCfg(
-    size=(16.0, 16.0),
+    size=(16.0, 20.0),
     border_width=20.0,
-    num_rows=2,
-    num_cols=2,
+    num_rows=1,
+    num_cols=1,
     horizontal_scale=0.1,
     vertical_scale=0.005,
     slope_threshold=0.75,
@@ -64,16 +64,19 @@ class SoccerSceneCfg(InteractiveSceneCfg):
     )
 
     def setup_soccer_game(self, game_cfg: SoccerGameCfg):
-        game_cfg.group_1_cfg
-        for player in game_cfg.group_1_cfg.players:
-            self.set_robot_entity(
-                player.name,
-                player.robot_cfg
-            )
+        for team in game_cfg.teams():
+            for player in team.players:
+                self.set_robot_entity(
+                    player.name,
+                    player.robot_cfg
+                )
 
     def set_robot_entity(self, prim_name, robot_cfg:ArticulationCfg, scanner=None):
         # robots
-        robot: ArticulationCfg = robot_cfg.replace(prim_path="{ENV_REGEX_NS}/" + prim_name)
+        robot_cfg.prim_path = "{ENV_REGEX_NS}/" + prim_name
+        robot: ArticulationCfg = robot_cfg
+        setattr(self, f"robot_{prim_name}", robot)
+        
         if scanner is not None:
             # sensors
             height_scanner = RayCasterCfg(
@@ -84,9 +87,8 @@ class SoccerSceneCfg(InteractiveSceneCfg):
                 debug_vis=False,
                 mesh_prim_paths=["/World/ground"],
             )
+            
+            setattr(self, f"height_scanner_{prim_name}", height_scanner)
         contact_forces = ContactSensorCfg(prim_path="{ENV_REGEX_NS}/" + f"{prim_name}/.*", history_length=3, track_air_time=True)
-
-        setattr(self, f"robot_{prim_name}", robot)
-        setattr(self, f"height_scanner_{prim_name}", height_scanner)
         setattr(self, f"contact_forces_{prim_name}", contact_forces)
 

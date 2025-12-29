@@ -40,7 +40,7 @@ from isaaclab_tasks.utils import get_checkpoint_path, parse_env_cfg
 from isaaclab_rl.rsl_rl import RslRlVecEnvWrapper
 from isaaclab.utils.io import dump_yaml
 
-import soccerTask.train
+import soccerTask.soccer
 
 class EnvWrapper(RslRlVecEnvWrapper):
     def get_privileged_observations(self):

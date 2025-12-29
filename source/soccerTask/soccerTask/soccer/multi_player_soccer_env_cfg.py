@@ -26,27 +26,29 @@ class MultiPlayerSoccerEnvCfg(ManagerBasedRLEnvCfg):
     soccer: Soccer3v3Cfg = Soccer3v3Cfg()
 
     def setup_multi_player(self):
-        self.scene
-
-        pass
-
+        self.scene.setup_soccer_game(self.soccer)
+        for team in self.soccer.teams():
+            for name in team.get_player_entities("height_scanner"):
+                target = getattr(self.scene, name, None)
+                if target is not None:
+                    target.update_period = self.decimation * self.sim.dt
+            for name in team.get_player_entities("contact_forces"):
+                target = getattr(self.scene, name, None)
+                if target is not None:
+                    target.update_period = self.sim.dt
 
     def __post_init__(self):
         """Post initialization."""
         # general settings
         self.decimation = 4
-        self.episode_length_s = 500.0
+        self.episode_length_s = 20.0
         # simulation settings
         self.sim.dt = 0.005
         self.sim.render_interval = self.decimation
         self.sim.physics_material = self.scene.terrain.physics_material
         self.sim.physx.gpu_max_rigid_patch_count = 10 * 2**15
 
-        # update sensor update periods
-        # we tick all the sensors based on the smallest update period (physics update period)
-        # TODO Sync with each entity
-        self.scene.contact_forces.update_period = self.sim.dt
-        self.scene.height_scanner.update_period = self.decimation * self.sim.dt
+        self.setup_multi_player()
 
         # check if terrain levels curriculum is enabled - if so, enable curriculum for terrain generator
         # this generates terrains with increasing difficulty and is useful for training

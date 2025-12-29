@@ -11,6 +11,13 @@ if TYPE_CHECKING:
     from soccerLab.soccer_game_cfg import SoccerGameCfg, SoccerTeamCfg
 
 
-def soccerLab_get_team_lin_vel(env:"ManagerBasedRLEnv") -> List["Articulation"]:
+def soccerLab_team_reset_root_state_uniform(
+    env: "ManagerBasedRLEnv",
+    env_ids: torch.Tensor,
+    pose_range: dict[str, tuple[float, float]],
+    velocity_range: dict[str, tuple[float, float]],
+) -> List["Articulation"]:
+    if env_ids is None: env_ids = torch.arange(env.num_envs, device=env.device)
     robots = soccerLab_get_team_robots(env)
-    return torch.cat([single.base_lin_vel(robot) for robot in robots], dim=-1)
+    for robot in robots:
+        single.reset_root_state_uniform(env, env_ids=env_ids, pose_range=pose_range, velocity_range=velocity_range, asset=robot)
