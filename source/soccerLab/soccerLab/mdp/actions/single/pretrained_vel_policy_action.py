@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from isaaclab.envs import ManagerBasedRLEnv
 
 
-class PreTrainedPolicyAction(ActionTerm):
+class PreTrainedVelPolicyAction(ActionTerm):
     r"""Pre-trained policy action term.
 
     This action term infers a pre-trained policy and applies the corresponding low-level actions to the robot.
@@ -24,10 +24,10 @@ class PreTrainedPolicyAction(ActionTerm):
 
     """
 
-    cfg: PreTrainedPolicyActionCfg
+    cfg: PreTrainedVelPolicyActionCfg
     """The configuration of the action term."""
 
-    def __init__(self, cfg: PreTrainedPolicyActionCfg, env: ManagerBasedRLEnv) -> None:
+    def __init__(self, cfg: PreTrainedVelPolicyActionCfg, env: ManagerBasedRLEnv) -> None:
         # initialize the action term
         super().__init__(cfg, env)
 
@@ -161,13 +161,13 @@ class PreTrainedPolicyAction(ActionTerm):
 
 
 @configclass
-class PreTrainedPolicyActionCfg(ActionTermCfg):
+class PreTrainedVelPolicyActionCfg(ActionTermCfg):
     """Configuration for pre-trained policy action term.
 
     See :class:`PreTrainedPolicyAction` for more details.
     """
 
-    class_type: type[ActionTerm] = PreTrainedPolicyAction
+    class_type: type[ActionTerm] = PreTrainedVelPolicyAction
     """ Class of the action term."""
     asset_name: str = MISSING
     """Name of the asset in the environment for which the commands are generated."""

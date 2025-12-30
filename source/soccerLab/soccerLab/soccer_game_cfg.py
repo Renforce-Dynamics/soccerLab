@@ -17,12 +17,15 @@ class SoccerTeamCfg:
         
         # General terms
         robot_cfg: ArticulationCfg = None
+        
+        @property
+        def asset_name(self):
+            return f"robot_{self.name}"
 
     team_name: str = MISSING
     players: List[PlayerCfg] = MISSING
     robot_cfg: ArticulationCfg = None
-    lowest_level_action_cfg: ActionTermCfg = MISSING
-    lowest_level_observation_cfg: ObservationGroupCfg = MISSING
+    # lowest_level_action_cfg: ActionTermCfg = MISSING
 
     def __post_init__(self):
         for idx, player in enumerate(self.players):

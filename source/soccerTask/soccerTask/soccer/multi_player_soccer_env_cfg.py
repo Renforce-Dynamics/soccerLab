@@ -1,7 +1,7 @@
 from isaaclab.utils import configclass
 from isaaclab.envs import ManagerBasedRLEnvCfg
 
-from soccerLab.multi_player.soccer_scene_cfg import SoccerSceneCfg
+from soccerLab.soccer_scene_cfg import SoccerSceneCfg
 from soccerLab.multi_player import \
     RewardsCfg, CommandsCfg, EventsCfg, ObservationsCfg, CurriculumsCfg, TerminationsCfg, ActionsCfg
 
