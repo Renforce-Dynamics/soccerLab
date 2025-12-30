@@ -169,3 +169,5 @@ source/fsmLab
 source/robotlib
 
 dataset/
+
+test_env.yaml
