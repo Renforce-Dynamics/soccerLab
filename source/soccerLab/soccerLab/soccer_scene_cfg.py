@@ -8,12 +8,14 @@ from isaaclab.terrains import TerrainImporterCfg
 from isaaclab.utils import configclass
 from isaaclab.utils.assets import ISAAC_NUCLEUS_DIR, ISAACLAB_NUCLEUS_DIR
 
+from isaaclab.assets import RigidObjectCfg
+
 import soccerLab.terrain as terrain_gen
 from soccerLab.soccer_game_cfg import SoccerGameCfg
 
 SOCCER_GROUND_CFG = terrain_gen.TerrainGeneratorCfg(
     size=(16.0, 20.0),
-    border_width=20.0,
+    border_width=5.0,
     num_rows=1,
     num_cols=1,
     horizontal_scale=0.1,
@@ -24,11 +26,11 @@ SOCCER_GROUND_CFG = terrain_gen.TerrainGeneratorCfg(
     sub_terrains={
         "flat": terrain_gen.MeshWallTerrainCfg(
             rail_height_range=(1, 1),
-            rail_thickness_range=(0.2, 0.2)
+            rail_thickness_range=(0.2, 0.2),
+            proportion=1.0
         ),
     },
 )
-
 
 @configclass
 class SoccerSceneCfg(InteractiveSceneCfg):
@@ -61,6 +63,27 @@ class SoccerSceneCfg(InteractiveSceneCfg):
             intensity=750.0,
             texture_file=f"{ISAAC_NUCLEUS_DIR}/Materials/Textures/Skies/PolyHaven/kloofendal_43d_clear_puresky_4k.hdr",
         ),
+    )
+    
+    ball = RigidObjectCfg(
+        prim_path="{ENV_REGEX_NS}/ball",
+        spawn=sim_utils.UrdfFileCfg(
+            asset_path="data/assets/assetslib/third_party/olympics/urdf/soccer.urdf",
+            fix_base=False,
+            rigid_props=sim_utils.RigidBodyPropertiesCfg(
+                disable_gravity=False,
+                max_depenetration_velocity=5.0,
+            ),
+            collision_props=sim_utils.CollisionPropertiesCfg(
+                collision_enabled=True,
+            ),
+            joint_drive=None
+        ),
+        init_state=RigidObjectCfg.InitialStateCfg(
+            pos=(0.0, 0.0, 0.2),
+            rot=(1.0, 0.0, 0.0, 0.0),
+        ),
+
     )
 
     def setup_soccer_game(self, game_cfg: SoccerGameCfg):

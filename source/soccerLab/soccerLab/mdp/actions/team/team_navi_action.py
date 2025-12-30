@@ -87,7 +87,7 @@ class TeamNaviAction(ActionTerm):
 @configclass
 class TeamNaviActionCfg(ActionTermCfg):
     class_type              : ActionTerm = TeamNaviAction
-    asset_name              : str = "robot_rp0"
+    asset_name              : str = "ball"
     team_name               : str = MISSING
     policy_path             : str = MISSING
     low_level_observations  : ObservationGroupCfg = MISSING

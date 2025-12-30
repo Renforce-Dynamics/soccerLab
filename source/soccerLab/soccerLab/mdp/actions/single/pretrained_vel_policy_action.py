@@ -12,6 +12,10 @@ from isaaclab.markers.config import BLUE_ARROW_X_MARKER_CFG, GREEN_ARROW_X_MARKE
 from isaaclab.utils import configclass
 from isaaclab.utils.assets import check_file_path, read_file
 
+from isaaclab.managers import SceneEntityCfg
+from isaaclab.managers import ObservationTermCfg as ObsTerm
+from soccerLab.utils.func_tools import has_param
+
 if TYPE_CHECKING:
     from isaaclab.envs import ManagerBasedRLEnv
 
@@ -50,6 +54,11 @@ class PreTrainedVelPolicyAction(ActionTerm):
             if hasattr(env, "episode_length_buf"):
                 self.low_level_actions[env.episode_length_buf == 0, :] = 0
             return self.low_level_actions
+
+        for term in vars(cfg.low_level_observations).values():
+            if isinstance(term, ObsTerm):
+                if has_param(term.func, "asset_cfg"):
+                    term.params["asset_cfg"] = SceneEntityCfg(cfg.asset_name)
 
         # remap some of the low level observations to internal observations
         cfg.low_level_observations.actions.func = lambda dummy_env: last_action()

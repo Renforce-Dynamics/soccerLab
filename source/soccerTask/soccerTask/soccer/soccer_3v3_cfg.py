@@ -11,15 +11,15 @@ class Soccer3v3Cfg(SoccerGameCfg):
         players=[
             SoccerTeamCfg.PlayerCfg(
                 name = "rp0",
-                init_pos=(-2, -2)
+                init_pos=(-3, -3)
             ),
             SoccerTeamCfg.PlayerCfg(
                 name = "rp1",
-                init_pos=(0, -2)
+                init_pos=(0, -3)
             ),
             SoccerTeamCfg.PlayerCfg(
                 name = "rp2",
-                init_pos=(2, -2)
+                init_pos=(3, -3)
             ),
         ],
         robot_cfg=G1_CYLINDER_CFG
@@ -29,15 +29,15 @@ class Soccer3v3Cfg(SoccerGameCfg):
         players=[
             SoccerTeamCfg.PlayerCfg(
                 name = "bp0",
-                init_pos=(-2, 2)
+                init_pos=(-3, 3)
             ),
             SoccerTeamCfg.PlayerCfg(
                 name = "bp1",
-                init_pos=(0, 2)
+                init_pos=(0, 3)
             ),
             SoccerTeamCfg.PlayerCfg(
                 name = "bp2",
-                init_pos=(2, 2)
+                init_pos=(3, 3)
             ),
         ],
         robot_cfg=G1_CYLINDER_CFG
