@@ -1,13 +1,21 @@
+import isaaclab.sim as sim_utils
 from isaaclab.utils import configclass
 from soccerLab.soccer_game_cfg import SoccerGameCfg, SoccerTeamCfg
 
 from isaaclab_assets.robots.unitree import UNITREE_A1_CFG, UNITREE_GO1_CFG
 from robotlib.beyondMimic.robots.g1 import G1_CYLINDER_CFG
 
+
 @configclass
 class Soccer3v3Cfg(SoccerGameCfg):
     group_1_cfg: SoccerTeamCfg = SoccerTeamCfg(
         team_name="red",
+        team_color_cfg=sim_utils.PreviewSurfaceCfg(
+            diffuse_color=(0.85, 0.2, 1.0),   # RGB ∈ [0, 1]
+            emissive_color=(0.85, 0.2, 1.0),
+            metallic=0.1,
+            roughness=0.4,
+        ),
         players=[
             SoccerTeamCfg.PlayerCfg(
                 name = "rp0",
@@ -26,6 +34,12 @@ class Soccer3v3Cfg(SoccerGameCfg):
     )
     group_2_cfg: SoccerTeamCfg = SoccerTeamCfg(
         team_name="blue",
+        team_color_cfg=sim_utils.PreviewSurfaceCfg(
+            diffuse_color=(0.15, 0.45, 1.0),   # RGB ∈ [0, 1]
+            emissive_color=(0.15, 0.45, 1.0),   # RGB ∈ [0, 1]
+            metallic=0.1,
+            roughness=0.4,
+        ),
         players=[
             SoccerTeamCfg.PlayerCfg(
                 name = "bp0",

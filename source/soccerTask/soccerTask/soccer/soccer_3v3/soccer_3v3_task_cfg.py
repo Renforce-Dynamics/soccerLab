@@ -79,7 +79,7 @@ class ActionsCfg:
         )
     )
     
-    bp0_action = actions.PreTrainedVelPolicyActionCfg(
+    bp1_action = actions.PreTrainedVelPolicyActionCfg(
         asset_name="robot_bp1",
         policy_path="data/ckpts/g1/g1_29d_loco_walk.pt",
         low_level_observations=PolicyCfg(),
@@ -88,7 +88,7 @@ class ActionsCfg:
         )
     )
     
-    bp0_action = actions.PreTrainedVelPolicyActionCfg(
+    bp2_action = actions.PreTrainedVelPolicyActionCfg(
         asset_name="robot_bp2",
         policy_path="data/ckpts/g1/g1_29d_loco_walk.pt",
         low_level_observations=PolicyCfg(),

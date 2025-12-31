@@ -87,11 +87,29 @@ class SoccerSceneCfg(InteractiveSceneCfg):
 
     def setup_soccer_game(self, game_cfg: SoccerGameCfg):
         for team in game_cfg.teams():
-            for player in team.players:
-                self.set_robot_entity(
-                    player.name,
-                    player.robot_cfg
-                )
+            team.setup_soccer_team(self)
+
+    def set_robot_marker(self, prim_name, color_cfg):
+        prim_path = "{ENV_REGEX_NS}/" + prim_name
+        setattr(
+            self, f"marker_{prim_name}", 
+            RigidObjectCfg(
+                prim_path=prim_path + "/team_marker",
+                spawn=sim_utils.SphereCfg(
+                    radius=0.05,
+                    visual_material=color_cfg,
+                    collision_props=sim_utils.CollisionPropertiesCfg(
+                        collision_enabled=False
+                    ),
+                    rigid_props=sim_utils.RigidBodyPropertiesCfg(
+                        disable_gravity=True
+                    ),
+                ),
+                init_state=RigidObjectCfg.InitialStateCfg(
+                    pos=(0.0, 0.0, 1.0),
+                ),
+            )
+        )
 
     def set_robot_entity(self, prim_name, robot_cfg:ArticulationCfg, scanner=None):
         # robots
