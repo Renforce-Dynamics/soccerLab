@@ -53,7 +53,8 @@ class TeamNaviAction(ActionTerm):
                     asset_name = player.asset_name,
                     policy_path = self.cfg.policy_path,
                     low_level_observations = low_level_observations,
-                    low_level_actions = low_level_actions
+                    low_level_actions = low_level_actions,
+                    debug_vis=False
                 ),
                 self._env
             )

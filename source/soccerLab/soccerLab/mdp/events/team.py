@@ -24,9 +24,10 @@ def soccerLab_team_reset_root_state_uniform(
     env_ids: torch.Tensor,
     pose_range: dict[str, tuple[float, float]],
     velocity_range: dict[str, tuple[float, float]],
+    team_names: str = None,
 ) -> List["Articulation"]:
     if env_ids is None: env_ids = torch.arange(env.num_envs, device=env.device)
-    robots = team_tools.soccerLab_get_team_robots(env)
+    robots = team_tools.soccerLab_get_team_robots(env, team_names)
     for robot in robots:
         single.reset_root_state_uniform(env, env_ids=env_ids, pose_range=pose_range, velocity_range=velocity_range, asset=robot)
 

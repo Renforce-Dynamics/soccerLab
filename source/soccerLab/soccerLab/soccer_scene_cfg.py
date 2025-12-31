@@ -90,7 +90,7 @@ class SoccerSceneCfg(InteractiveSceneCfg):
             team.setup_soccer_team(self)
 
     def set_robot_marker(self, prim_name, color_cfg):
-        prim_path = "{ENV_REGEX_NS}/" + prim_name
+        prim_path = "{ENV_REGEX_NS}/" + f"{prim_name}"
         setattr(
             self, f"marker_{prim_name}", 
             RigidObjectCfg(

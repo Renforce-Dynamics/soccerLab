@@ -41,7 +41,7 @@ class SoccerTeamCfg:
                 player.player_name = f"{self.team_name}{idx:02d}"
             asset_init = player.robot_cfg.init_state
             # world position (x, y, z)
-            pos = player.init_pos + (asset_init.pos[2] + 0.05,)
+            pos = player.init_pos + (asset_init.pos[2],)
             # only use xy to compute yaw
             x, y = pos[0], pos[1]
             yaw = np.arctan2(-y, -x)
@@ -64,10 +64,10 @@ class SoccerTeamCfg:
                 player.name,
                 player.robot_cfg
             )
-            if self.team_color_cfg is not None:
-                scene_cfg.set_robot_marker(
-                    player.name, self.team_color_cfg
-                )
+            # if self.team_color_cfg is not None:
+            #     scene_cfg.set_robot_marker(
+            #         player.name, "pelvis", self.team_color_cfg
+            #     )
 
 @configclass
 class SoccerGameCfg:

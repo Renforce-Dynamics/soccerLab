@@ -40,19 +40,21 @@ install_modules() {
 
 echo "🧩 Checking and cloning required repositories..."
 
-# clone_repo git@github.com:Renforce-Dynamics/assetslib.git ./data/assets/assetslib
+clone_repo git@github.com:Renforce-Dynamics/assetslib.git ./data/assets/assetslib
 clone_repo git@github.com:Renforce-Dynamics/robotlib.git ./source/robotlib
-# clone_repo git@github.com:Renforce-Dynamics/fsmLab.git ./source/fsmLab
+clone_repo git@github.com:Renforce-Dynamics/IsaacNPC.git ./source/third_party/IsaacNPC
+clone_repo git@github.com:Renforce-Dynamics/fsmLab.git ./source/third_party/fsmLab
 
 modules=(
     "./source/rsl_rl"
     "./source/soccerLab"
     "./source/soccerTask"
-    # "./source/fsmLab"
     "./source/robotlib"
     "./source/third_party/beyondMimic"
     "./source/third_party/locomotion_rl_lab"
     "./source/third_party/sim2simlib"
+    "./source/third_party/IsaacNPC"
+    "./source/third_party/fsmLab"
 )
 
 install_modules "${modules[@]}"

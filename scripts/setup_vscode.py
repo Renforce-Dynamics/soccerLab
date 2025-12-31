@@ -21,11 +21,12 @@ relative_extra_paths = [
     "./source/rsl_rl",
     "./source/soccerLab",
     "./source/soccerTask",
-    # "./source/fsmLab",
     "./source/robotlib",
     "./source/third_party/beyondMimic",
     "./source/third_party/locomotion_rl_lab",
-    "./source/third_party/sim2simlib"
+    "./source/third_party/sim2simlib",
+    "./source/third_party/IsaacNPC",
+    "./source/third_party/fsmLab",
 ]
 
 # Normalize and convert relative paths to absolute paths

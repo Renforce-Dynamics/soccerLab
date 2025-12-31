@@ -45,6 +45,7 @@ class PreTrainedVelPolicyAction(ActionTerm):
 
         self._raw_actions = torch.zeros(self.num_envs, self.action_dim, device=self.device)
 
+        cfg.low_level_actions.asset_name = self.cfg.asset_name
         # prepare low level actions
         self._low_level_action_term: ActionTerm = cfg.low_level_actions.class_type(cfg.low_level_actions, env)
         self.low_level_actions = torch.zeros(self.num_envs, self._low_level_action_term.action_dim, device=self.device)
