@@ -76,7 +76,7 @@ def main():
 
     # wrap around environment for rsl-rl
     env = EnvWrapper(env)
-
+    env.reset()
     # reset environment
     obs, _ = env.get_observations()
     # breakpoint()
@@ -92,8 +92,6 @@ def main():
             # env stepping
             #print(actions)
             obs, r, d, extra = env.step(actions)
-            # print(extra["constraint"])
-            #breakpoint()
 
         if args_cli.video:
             pbar.update()

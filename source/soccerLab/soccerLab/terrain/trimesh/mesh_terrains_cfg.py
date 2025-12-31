@@ -12,12 +12,23 @@ import isaaclab.terrains.trimesh.utils as mesh_utils_terrains
 from isaaclab.utils import configclass
 
 from isaaclab.terrains.sub_terrain_cfg import SubTerrainBaseCfg
-from .trimesh_terrains import wall_terrain, rails_terrain
+from .trimesh_terrains import wall_terrain, rails_terrain, soccer_terrain
 
 """
 Different trimesh terrain configurations.
 """
 
+@configclass
+class MeshSoccerTerrainCfg(SubTerrainBaseCfg):
+    """Configuration for a terrain with box rails as extrusions."""
+
+    function = soccer_terrain
+    rail_thickness_range: tuple[float, float] = MISSING
+    """The thickness of the inner and outer rails (in m)."""
+    rail_height_range: tuple[float, float] = MISSING
+    """The minimum and maximum height of the rails (in m)."""
+    goal_width: float = 3
+    goal_depth: float = 0.5
 
 @configclass
 class MeshWallTerrainCfg(SubTerrainBaseCfg):

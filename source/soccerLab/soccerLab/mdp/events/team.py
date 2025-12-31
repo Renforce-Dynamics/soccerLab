@@ -30,6 +30,22 @@ def soccerLab_team_reset_root_state_uniform(
     for robot in robots:
         single.reset_root_state_uniform(env, env_ids=env_ids, pose_range=pose_range, velocity_range=velocity_range, asset=robot)
 
+def soccerLab_team_reset_joints_by_scale(
+    env             : "ManagerBasedRLEnv",
+    env_ids         : torch.Tensor,
+    position_range  : tuple[float, float],
+    velocity_range  : tuple[float, float],
+    team_names      : List[str] = None
+) -> List["Articulation"]:
+    if env_ids is None: env_ids = torch.arange(env.num_envs, device=env.device)
+    robot_names = team_tools.soccerLab_get_team_robot_names(env, team_names)
+    for robot_name in robot_names:
+        mdp.reset_joints_by_scale(
+            env=env, env_ids=env_ids,
+            position_range=position_range,
+            velocity_range=velocity_range,
+            asset_cfg=SceneEntityCfg(robot_name)
+        )
 
 class soccerLab_team_randomize_func(ManagerTermBase):
     def __init__(self, cfg: "EventTermCfg", env: "ManagerBasedRLEnv"):

@@ -12,6 +12,63 @@ from .utils import make_border, make_plane
 if TYPE_CHECKING:
     from mesh_terrains_cfg import MeshWallTerrainCfg, MeshRailsTerrainCfg
 
+def soccer_terrain(difficulty: float, cfg: "MeshWallTerrainCfg"):
+    x, y = cfg.size
+    gw = cfg.goal_width
+    gd = cfg.goal_depth
+
+    t = cfg.rail_thickness_range[0]
+    h = cfg.rail_height_range[1] - difficulty * (
+        cfg.rail_height_range[1] - cfg.rail_height_range[0]
+    )
+
+    z = 0.5 * h
+    meshes = []
+
+    def wall(p0, p1):
+        p0 = np.asarray(p0)
+        p1 = np.asarray(p1)
+
+        center = 0.5 * (p0 + p1)
+        d = p1 - p0
+        if abs(d[0]) > abs(d[1]):   # horizontal wall
+            dim = (abs(d[0]), t, h)
+        else:                       # vertical wall
+            dim = (t, abs(d[1]), h)
+        meshes.append(
+            trimesh.creation.box(
+                dim,
+                trimesh.transformations.translation_matrix(
+                    (center[0]+0.5 * cfg.size[0], center[1]+0.5 * cfg.size[1], z)
+                )
+            )
+        )
+
+    X, Y = 0.5 * x, 0.5 * y
+    GW, GD = 0.5 * gw, gd
+
+    # left side
+    wall(np.array([-X, -Y]), np.array([-X, -GW]))
+    wall(np.array([-X - GD, -GW]), np.array([-X - GD, +GW]))
+    wall(np.array([-X, +GW]), np.array([-X, +Y]))
+
+    # right side
+    wall(np.array([+X, -Y]), np.array([+X, -GW]))
+    wall(np.array([+X + GD, -GW]), np.array([+X + GD, +GW]))
+    wall(np.array([+X, +GW]), np.array([+X, +Y]))
+
+    # bottom & top
+    wall(np.array([-X, -Y]), np.array([+X, -Y]))
+    wall(np.array([-X, +Y]), np.array([+X, +Y]))
+
+    terrain_height = 1.0
+    dim = (cfg.size[0], cfg.size[1], terrain_height)
+    # Ground plane's center Z coordinate is set so its top surface is at Z=0
+    pos = (0.5 * cfg.size[0], 0.5 * cfg.size[1], -terrain_height / 2)
+    ground_meshes = trimesh.creation.box(dim, trimesh.transformations.translation_matrix(pos))
+    meshes.append(ground_meshes)
+    origin = np.array([pos[0], pos[1], 0.0])
+    return meshes, origin
 
 def wall_terrain(
     difficulty: float, cfg: MeshWallTerrainCfg

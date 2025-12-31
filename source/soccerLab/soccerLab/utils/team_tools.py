@@ -16,6 +16,17 @@ def soccerLab_get_team_cfg(env:"ManagerBasedRLEnv", team_names: List[str]=None) 
         teams = [getattr(env_cfg.soccer, name) for name in team_names]
     return teams
 
+def soccerLab_get_team_robot_names(env:"ManagerBasedRLEnv", team_names: List[str]=None) -> List["Articulation"]:
+    env_cfg: "MultiPlayerSoccerEnvCfg" = env.cfg
+    if team_names is None:
+        teams = env_cfg.soccer.teams()
+    else:
+        teams = [getattr(env_cfg.soccer, name) for name in team_names]
+    robot_names = []
+    for team in teams:
+        robot_names += team.get_player_entities("robot")
+    return robot_names
+
 def soccerLab_get_team_robots(env:"ManagerBasedRLEnv", team_names: List[str]=None) -> List["Articulation"]:
     env_cfg: "MultiPlayerSoccerEnvCfg" = env.cfg
     if team_names is None:

@@ -7,6 +7,7 @@ from isaaclab.managers import RewardTermCfg as RewTerm
 from isaaclab.managers import TerminationTermCfg as DoneTerm
 from isaaclab.managers import EventTermCfg as EventTerm
 from isaaclab.managers import SceneEntityCfg
+from isaaclab.utils.noise import AdditiveUniformNoiseCfg as Unoise
 
 from soccerLab.mdp import events, observations, actions
 
@@ -47,13 +48,13 @@ class CurriculumsCfg:
 class ActionsCfg:
     @configclass
     class PolicyCfg(ObsGroup):
-        base_lin_vel        = ObsTerm(func=mdp.base_lin_vel, clip=(-100, 100))
-        base_ang_vel        = ObsTerm(func=mdp.base_ang_vel, scale=0.2, clip=(-100, 100))
-        projected_gravity   = ObsTerm(func=mdp.projected_gravity)
-        velocity_commands   = ObsTerm(func=mdp.generated_commands, params={"command_name": "base_velocity"})
-        joint_pos_rel       = ObsTerm(func=mdp.joint_pos_rel, clip=(-100, 100))
-        joint_vel_rel       = ObsTerm(func=mdp.joint_vel_rel, scale=0.05, clip=(-100, 100))
-        actions             = ObsTerm(func=mdp.last_action, clip=(-12, 12))
+        base_lin_vel = ObsTerm(func=mdp.base_lin_vel, clip=(-100, 100))
+        base_ang_vel = ObsTerm(func=mdp.base_ang_vel, scale=0.2, noise=Unoise(n_min=-0.2, n_max=0.2), clip=(-100, 100))
+        projected_gravity = ObsTerm(func=mdp.projected_gravity, noise=Unoise(n_min=-0.05, n_max=0.05))
+        velocity_commands = ObsTerm(func=mdp.generated_commands, params={"command_name": "base_velocity"})
+        joint_pos_rel = ObsTerm(func=mdp.joint_pos_rel, noise=Unoise(n_min=-0.01, n_max=0.01), clip=(-100, 100))
+        joint_vel_rel = ObsTerm(func=mdp.joint_vel_rel, scale=0.05, noise=Unoise(n_min=-1.5, n_max=1.5), clip=(-100, 100))
+        actions = ObsTerm(func=mdp.last_action, clip=(-12, 12))
 
         def __post_init__(self):
             # self.history_length = 5
@@ -126,7 +127,7 @@ class EventsCfg:
         },
     )
     
-    reset_start = EventTerm(
+    reset_base_startup = EventTerm(
         func=events.soccerLab_team_reset_root_state_uniform,
         mode="startup",
         params={
@@ -139,6 +140,25 @@ class EventsCfg:
                 "pitch": (0.0, 0.0),
                 "yaw": (0.0, 0.0),
             },
+        },
+    )
+    
+    reset_joint_startup = EventTerm(
+        func=events.soccerLab_team_reset_joints_by_scale,
+        mode="startup",
+        params={
+            "position_range": (1.0, 1.0),
+            "velocity_range": (-1.0, 1.0),
+        },
+    )
+    
+    
+    reset_joint = EventTerm(
+        func=events.soccerLab_team_reset_joints_by_scale,
+        mode="reset",
+        params={
+            "position_range": (1.0, 1.0),
+            "velocity_range": (-1.0, 1.0),
         },
     )
     

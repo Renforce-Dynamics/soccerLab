@@ -14,7 +14,7 @@ import soccerLab.terrain as terrain_gen
 from soccerLab.soccer_game_cfg import SoccerGameCfg
 
 SOCCER_GROUND_CFG = terrain_gen.TerrainGeneratorCfg(
-    size=(16.0, 20.0),
+    size=(20.0, 16.0),
     border_width=5.0,
     num_rows=1,
     num_cols=1,
@@ -24,7 +24,7 @@ SOCCER_GROUND_CFG = terrain_gen.TerrainGeneratorCfg(
     difficulty_range=(0.0, 1.0),
     use_cache=False,
     sub_terrains={
-        "flat": terrain_gen.MeshWallTerrainCfg(
+        "flat": terrain_gen.MeshSoccerTerrainCfg(
             rail_height_range=(1, 1),
             rail_thickness_range=(0.2, 0.2),
             proportion=1.0
@@ -83,7 +83,6 @@ class SoccerSceneCfg(InteractiveSceneCfg):
             pos=(0.0, 0.0, 0.2),
             rot=(1.0, 0.0, 0.0, 0.0),
         ),
-
     )
 
     def setup_soccer_game(self, game_cfg: SoccerGameCfg):

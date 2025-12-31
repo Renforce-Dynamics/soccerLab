@@ -1,4 +1,5 @@
-
+import torch
+import numpy as np
 from isaaclab.utils import configclass
 from isaaclab.assets import ArticulationCfg, AssetBaseCfg
 import copy
@@ -32,13 +33,17 @@ class SoccerTeamCfg:
             if self.robot_cfg is not None:
                 player.robot_cfg = copy.deepcopy(self.robot_cfg)
             if player.name is None:
-                player.player_name = f"{self.team_name}{idx:2d}"
-            asset_init_pos = player.robot_cfg.init_state
-            player.robot_cfg.init_state = asset_init_pos.replace(
-                pos = player.init_pos + (asset_init_pos.pos[2],),
-                rot = asset_init_pos.rot
-            )
-        self.robot_cfg = None  # clear to avoid misuse
+                player.player_name = f"{self.team_name}{idx:02d}"
+            asset_init = player.robot_cfg.init_state
+            # world position (x, y, z)
+            pos = player.init_pos + (asset_init.pos[2] + 0.05,)
+            # only use xy to compute yaw
+            x, y = pos[0], pos[1]
+            yaw = np.arctan2(-y, -x)
+            # yaw-only quaternion (w, x, y, z)
+            rot = (np.cos(0.5 * yaw),0.0,0.0,np.sin(0.5 * yaw),)
+            player.robot_cfg.init_state = asset_init.replace(pos=pos,rot=rot,)
+        self.robot_cfg = None
 
     def get_player_entities(self, entity_type: Literal["robot", "height_scanner", "contact_forces"]):
         """
