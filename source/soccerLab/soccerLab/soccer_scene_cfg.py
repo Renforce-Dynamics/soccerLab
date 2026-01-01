@@ -77,6 +77,9 @@ class SoccerSceneCfg(InteractiveSceneCfg):
             collision_props=sim_utils.CollisionPropertiesCfg(
                 collision_enabled=True,
             ),
+            mass_props=sim_utils.MassPropertiesCfg(
+                mass=0.3,
+            ),
             joint_drive=None
         ),
         init_state=RigidObjectCfg.InitialStateCfg(

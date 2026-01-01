@@ -29,7 +29,7 @@ class Soccer3v3EnvCfg(MultiPlayerSoccerEnvCfg):
         """Post initialization."""
         # general settings
         self.decimation = 4
-        self.episode_length_s = 20.0
+        self.episode_length_s = 200.0
         # simulation settings
         self.sim.dt = 0.005
         self.sim.render_interval = self.decimation

@@ -84,8 +84,8 @@ class ActionsCfg:
     def __post_init__(self):
         # Method 2
         from IsaacNPC.utils.terms_tools import npc_make_robot_action_term
-        from IsaacNPC.template.g1.vel_policy_cfg import G1VelPolicyActionsCfg
-        action_cfg = G1VelPolicyActionsCfg()
+        from IsaacNPC.template.g1.npc_routine_cfg import G1NPCRoutineActionsCfg
+        action_cfg = G1NPCRoutineActionsCfg()
         npc_make_robot_action_term(action_cfg, "robot_bp1", self, term_type=ActionTermCfg)
         
         from IsaacNPC.template.g1.npc_zero_vel_policy_cfg import G1NPCVelPolicyActionsCfg
