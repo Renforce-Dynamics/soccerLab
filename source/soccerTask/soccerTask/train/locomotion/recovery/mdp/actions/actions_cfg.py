@@ -22,8 +22,8 @@ from isaaclab.managers.action_manager import ActionTerm, ActionTermCfg  # noqa: 
 from isaaclab.utils import configclass  # noqa: F401
 
 # pyright: reportGeneralTypeIssues=false
-from roboRec.mdp.actions.harness_action import HarnessAction
-from roboRec.mdp.actions.lift_action import LiftAction
+from .harness_action import HarnessAction
+from .lift_action import LiftAction
 
 # Import GUI action class for registration
 from .joint_pos_gui_action import JointPositionGUIAction  # noqa: F401, E402

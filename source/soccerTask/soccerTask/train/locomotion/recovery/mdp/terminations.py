@@ -21,7 +21,7 @@ from isaaclab.envs import ManagerBasedRLEnv
 from isaaclab.managers import EventTermCfg, ManagerTermBase, SceneEntityCfg
 from isaaclab.sensors import ContactSensor, RayCaster
 
-from ..utils import get_robot_cfg
+from .utils import get_robot_cfg
 
 
 def illegal_ground_contact(

@@ -21,21 +21,8 @@ from isaaclab.envs import ManagerBasedEnv, ManagerBasedRLEnv
 from isaaclab.managers import SceneEntityCfg
 from isaaclab.sensors import RayCaster
 
-from roboRec.isaaclab_extras.utils.io_descriptors import (
-    generic_io_descriptor,
-    record_body_names,
-    record_dtype,
-    record_joint_names,
-    record_shape,
-)
 from ..commands import UniformVelocityBaseHeightCommand
 
-
-@generic_io_descriptor(  # type: ignore[arg-type]
-    units="unit",
-    observation_type="Environment",
-    on_inspect=[record_shape, record_dtype],
-)
 def is_env_inactive(env: ManagerBasedRLEnv, rest_duration_s: float) -> torch.Tensor:
     """Check if the environment is in the rest phase."""
     # Note: episode_length_buf is initialized after managers, so we check for its existence.
@@ -46,7 +33,6 @@ def is_env_inactive(env: ManagerBasedRLEnv, rest_duration_s: float) -> torch.Ten
         return torch.ones(env.num_envs, 1, device=env.device)
 
 
-@generic_io_descriptor(units="m", observation_type="Sensor", on_inspect=[record_shape, record_dtype])  # type: ignore[arg-type]
 def height_scan_feet(
     env: ManagerBasedEnv,
     sensor_cfg_left: SceneEntityCfg,
@@ -71,7 +57,6 @@ def height_scan_feet(
     return out.reshape(out.shape[0], -1)
 
 
-@generic_io_descriptor(units="m", observation_type="Command", on_inspect=[record_shape, record_dtype])  # type: ignore[arg-type]
 def base_height_from_command(
     env: ManagerBasedRLEnv,
     command_name: str,
@@ -109,9 +94,6 @@ Commands.
 """
 
 
-@generic_io_descriptor(
-    observation_type="JointState", on_inspect=[record_joint_names, record_dtype, record_shape], units="rad/s^2"
-)
 def joint_acc(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")) -> torch.Tensor:
     """Extract the joint accelerations of the asset.
 
@@ -123,7 +105,6 @@ def joint_acc(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg = SceneEntityCfg
     return asset.data.joint_acc[:, asset_cfg.joint_ids]
 
 
-@generic_io_descriptor(observation_type="Sensor", on_inspect=[record_body_names, record_dtype, record_shape], units="N")
 def contact_force_norm(
     env: ManagerBasedRLEnv,
     sensor_cfg: SceneEntityCfg = SceneEntityCfg("robot"),

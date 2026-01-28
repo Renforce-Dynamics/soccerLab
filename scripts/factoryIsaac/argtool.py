@@ -147,7 +147,7 @@ def load_cfgs(args_cli, modified=False):
 
 def prepare_wrapper(env, args_cli, agent_cfg) -> Tuple[RslRlVecEnvWrapper, type[OnPolicyRunner], dict]:
     print("Using main branch.")
-    from isaaclab_rl.rsl_rl import RslRlOnPolicyRunnerCfg, RslRlVecEnvWrapper
+    from rsl_rl.env.lab import RslRlVecEnvWrapper
     func_runner = OnPolicyRunner
     env = RslRlVecEnvWrapper(env)
     learn_cfg = {

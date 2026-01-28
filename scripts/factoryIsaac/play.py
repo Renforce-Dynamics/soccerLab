@@ -51,7 +51,7 @@ import gymnasium as gym
 import os
 import torch
 
-import fighterTask.train
+import soccerTask.train
 # import isaaclab_tasks  # noqa: F401
 from isaaclab_tasks.utils import get_checkpoint_path, parse_env_cfg
 from isaaclab.utils.dict import print_dict
@@ -159,12 +159,13 @@ def main():
     os.makedirs(export_model_dir, exist_ok=True)
     torch.save(runner.alg.actor_critic, os.path.join(export_model_dir, "policy.pth"))
     export_policy_as_onnx(runner.alg.actor_critic, export_model_dir, filename="policy.onnx")
-    rsl_arg_cli.export_policy_as_jit(
-        rsl_arg_cli.InferencePolicy(runner.alg.actor_critic), 
-        obs[0, :], export_model_dir, filename="policy.pt",
-        device = env.device
-    )
-    print(f"[INFO]: Saving policy to: {export_model_dir}")
+    # rsl_arg_cli.export_policy_as_jit(
+    #     rsl_arg_cli.InferencePolicy(runner.alg.actor_critic), 
+    #     # obs[0, :], 
+    #     export_model_dir, filename="policy.pt",
+    #     device = env.device
+    # )
+    # print(f"[INFO]: Saving policy to: {export_model_dir}")
 
 
     pbar = tqdm.tqdm(range(args_cli.length)) if args_cli.length>0  else tqdm.tqdm()

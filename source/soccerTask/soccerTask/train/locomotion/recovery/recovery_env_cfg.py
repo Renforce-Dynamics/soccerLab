@@ -123,8 +123,8 @@ class ObservationsCfg:
         def __post_init__(self):
             self.history_length = 5
             self.enable_corruption = True
-            self.concatenate_terms = False
-            self.flatten_history_dim = False
+            self.concatenate_terms = True
+            self.flatten_history_dim = True
 
     @configclass
     class CriticObservationsCfg(ObsGroup):
@@ -156,9 +156,9 @@ class ObservationsCfg:
 
         def __post_init__(self):
             self.history_length = 5
-            self.enable_corruption = False
-            self.concatenate_terms = False
-            self.flatten_history_dim = False
+            self.enable_corruption = True
+            self.concatenate_terms = True
+            self.flatten_history_dim = True
 
     policy: PolicyObservationCfg = PolicyObservationCfg()
     critic: CriticObservationsCfg = CriticObservationsCfg()

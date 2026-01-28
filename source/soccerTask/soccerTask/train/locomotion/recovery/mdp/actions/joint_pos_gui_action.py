@@ -22,8 +22,8 @@ import torch
 
 from isaaclab.envs.mdp.actions import JointPositionAction  # type: ignore
 
-from roboRec.mdp.symmetry.symmetry_g1 import lr_mirror_G1
-from roboRec.mdp.symmetry.symmetry_t1 import lr_mirror_T1
+from ..symmetry.symmetry_g1 import lr_mirror_G1
+from ..symmetry.symmetry_t1 import lr_mirror_T1
 
 if TYPE_CHECKING:  # pragma: no cover
     from isaaclab.envs import ManagerBasedEnv
