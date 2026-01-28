@@ -19,7 +19,6 @@ from isaaclab.utils.assets import ISAAC_NUCLEUS_DIR, ISAACLAB_NUCLEUS_DIR
 from isaaclab.utils.noise import AdditiveUniformNoiseCfg as Unoise
 
 from . import mdp
-from robotlib.soccerLab import booster_t1
 from .mdp.terrains import STAND_UP_ROUGH_TERRAIN_CFG  # noqa: F401, F403
 
 FILE_DIR = pathlib.Path(__file__).parent
@@ -60,8 +59,8 @@ class SceneCfg(InteractiveSceneCfg):
         debug_vis=False,
     )
 
-    # robots
-    robot = booster_t1.T1_DELAYED_DC_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
+    # robots - to be specified by robot-specific configs
+    # robot: ArticulationCfg = None  # type: ignore
 
     # sensors
     contact_forces = ContactSensorCfg(
@@ -79,15 +78,8 @@ class SceneCfg(InteractiveSceneCfg):
         ),
     )
 
-    height_measurement_sensor = RayCasterCfg(
-        prim_path="{ENV_REGEX_NS}/Robot/Trunk",
-        offset=RayCasterCfg.OffsetCfg(pos=(0.0, 0.0, 0.0)),
-        ray_alignment="yaw",
-        pattern_cfg=patterns.GridPatternCfg(resolution=0.05, size=(0.0, 0.0)),
-        debug_vis=False,
-        mesh_prim_paths=["/World/ground"],
-        max_distance=5.0,
-    )
+    # height_measurement_sensor - to be specified by robot-specific configs
+    # height_measurement_sensor: RayCasterCfg = None  # type: ignore
 
 
 @configclass
@@ -177,22 +169,17 @@ class ActionsCfg:
         preserve_order=True,
     )
 
-    lift = mdp.LiftActionCfg(
-        asset_name="robot",
-        link_to_lift="H2",  # Head
-        stiffness_forces=5000.0,
-        damping_forces=500.0,
-        force_limit=300.0,
-        height_sensor="height_measurement_sensor",
-        target_height=booster_t1.DEFAULT_TRUNK_HEIGHT,
-        start_lifting_time_s=3.0,
-        lifting_duration_s=10.0,
-    )
+    # lift action - to be specified by robot-specific configs if needed
+    # lift: mdp.LiftActionCfg = None  # type: ignore
 
 
 @configclass
 class RewardsCfg:
-    """Reward terms for the MDP."""
+    """Reward terms for the MDP.
+    
+    Note: Robot-specific values (like target_height, body_names, etc.) should be
+    provided by robot-specific subclasses that override this configuration.
+    """
 
     # Regularization:
     joint_torques_l2 = RewTerm(func=mdp.joint_torques_l2, weight=-1.0e-5)
@@ -221,11 +208,14 @@ class RewardsCfg:
     )
 
     # Task:
+    # Note: These reward terms use robot-specific values that should be overridden
+    # by robot-specific subclasses. The values below are placeholders and will not
+    # be used if a subclass overrides this configuration.
     base_height_rough = RewTerm(
         func=mdp.base_height_exp,
         weight=2.0,
         params={
-            "target_height": booster_t1.DEFAULT_TRUNK_HEIGHT,
+            "target_height": 0.0,  # Placeholder - override in robot-specific configs
             "std": 0.5,
             "sensor_cfg": SceneEntityCfg("height_measurement_sensor"),
         },
@@ -234,7 +224,7 @@ class RewardsCfg:
         func=mdp.base_height_exp,
         weight=8.0,
         params={
-            "target_height": booster_t1.DEFAULT_TRUNK_HEIGHT,
+            "target_height": 0.0,  # Placeholder - override in robot-specific configs
             "std": 0.25,
             "sensor_cfg": SceneEntityCfg("height_measurement_sensor"),
         },
@@ -243,7 +233,7 @@ class RewardsCfg:
         func=mdp.base_height_exp,
         weight=16.0,
         params={
-            "target_height": booster_t1.DEFAULT_TRUNK_HEIGHT,
+            "target_height": 0.0,  # Placeholder - override in robot-specific configs
             "std": 0.1,
             "sensor_cfg": SceneEntityCfg("height_measurement_sensor"),
         },
@@ -254,7 +244,7 @@ class RewardsCfg:
         weight=0.05,
         params={
             "asset_cfg": SceneEntityCfg("robot"),
-            "standing_height_threshold": booster_t1.DEFAULT_TRUNK_HEIGHT * 0.8,
+            "standing_height_threshold": 0.0,  # Placeholder - override in robot-specific configs
             "sensor_cfg": SceneEntityCfg("height_measurement_sensor"),
             "std": 0.1,
         },
@@ -273,7 +263,7 @@ class RewardsCfg:
             "asset_cfg": SceneEntityCfg("robot"),
             "weight_lin": 1.0,
             "weight_ang": 1.0,
-            "standing_height_threshold": booster_t1.DEFAULT_TRUNK_HEIGHT * 0.8,
+            "standing_height_threshold": 0.0,  # Placeholder - override in robot-specific configs
             "sensor_cfg": SceneEntityCfg("height_measurement_sensor"),
         },
     )
@@ -285,7 +275,7 @@ class RewardsCfg:
         params={
             "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*foot_link"),
             "asset_cfg": SceneEntityCfg("robot"),
-            "standing_height_threshold": booster_t1.DEFAULT_TRUNK_HEIGHT * 0.8,
+            "standing_height_threshold": 0.0,  # Placeholder - override in robot-specific configs
             "height_measurement_sensor": SceneEntityCfg("height_measurement_sensor"),
         },
     )
@@ -294,7 +284,7 @@ class RewardsCfg:
         func=mdp.illegal_contact,
         weight=-1.0,
         params={
-            "sensor_cfg": SceneEntityCfg("contact_forces", body_names=booster_t1.UNDESIRED_CONTACTS_LINKS),
+            "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*"),  # Placeholder - override in robot-specific configs
             "threshold": 1.0,
         },
     )
@@ -303,9 +293,9 @@ class RewardsCfg:
         func=mdp.feet_distance_from_ref_if_standing,
         weight=-50.0,
         params={
-            "asset_cfg": SceneEntityCfg("robot", body_names=booster_t1.FEET_LINK_NAMES),
+            "asset_cfg": SceneEntityCfg("robot", body_names=".*foot_link.*"),  # Placeholder - override in robot-specific configs
             "ref_distance": 0.2,  # 20cm lateral distance between feet
-            "standing_height_threshold": booster_t1.DEFAULT_TRUNK_HEIGHT * 0.8,
+            "standing_height_threshold": 0.0,  # Placeholder - override in robot-specific configs
         },
     )
 
@@ -315,7 +305,7 @@ class RewardsCfg:
         params={
             "feet_asset_cfg": SceneEntityCfg("robot", body_names=".*foot_link.*"),
             "base_body_cfg": SceneEntityCfg("robot", body_names="Waist"),
-            "standing_height_threshold": booster_t1.DEFAULT_TRUNK_HEIGHT * 0.8,
+            "standing_height_threshold": 0.0,  # Placeholder - override in robot-specific configs
         },
     )
 
@@ -343,7 +333,7 @@ class TerminationsCfg:
         func=mdp.standing,
         params={
             "asset_cfg": SceneEntityCfg("robot"),
-            "min_height": booster_t1.DEFAULT_TRUNK_HEIGHT * 0.8,
+            "min_height": 0.0,  # Placeholder - override in robot-specific configs
             "sensor_cfg": SceneEntityCfg("height_measurement_sensor"),
             "duration_s": 5.0,
         },

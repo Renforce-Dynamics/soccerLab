@@ -43,7 +43,7 @@ echo "🧩 Checking and cloning required repositories..."
 clone_repo git@github.com:Renforce-Dynamics/assetslib.git ./data/assets/assetslib
 clone_repo git@github.com:Renforce-Dynamics/robotlib.git ./source/robotlib
 clone_repo git@github.com:Renforce-Dynamics/IsaacNPC.git ./source/third_party/IsaacNPC
-clone_repo git@github.com:Renforce-Dynamics/fsmLab.git ./source/third_party/fsmLab
+clone_repo git@github.com:Renforce-Dynamics/beyondAMP.git "./source/third_party/beyondAMP"
 
 modules=(
     "./source/rsl_rl"
@@ -54,7 +54,9 @@ modules=(
     "./source/third_party/locomotion_rl_lab"
     "./source/third_party/sim2simlib"
     "./source/third_party/IsaacNPC"
-    "./source/third_party/fsmLab"
+    "./source/third_party/beyondAMP/source/beyondAMP",
+    "./source/third_party/beyondAMP/source/rsl_rl_amp"
+    # "./source/third_party/fsmLab"
 )
 
 install_modules "${modules[@]}"

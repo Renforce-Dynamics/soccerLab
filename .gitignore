@@ -171,3 +171,4 @@ source/robotlib
 dataset/
 
 test_env.yaml
+pyrightconfig.json
