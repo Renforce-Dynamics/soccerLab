@@ -43,7 +43,7 @@ echo "🧩 Checking and cloning required repositories..."
 clone_repo git@github.com:Renforce-Dynamics/assetslib.git ./data/assets/assetslib
 clone_repo git@github.com:Renforce-Dynamics/robotlib.git ./source/robotlib
 clone_repo git@github.com:Renforce-Dynamics/IsaacNPC.git ./source/third_party/IsaacNPC
-clone_repo git@github.com:Renforce-Dynamics/beyondAMP.git "./source/third_party/beyondAMP"
+#clone_repo git@github.com:Renforce-Dynamics/fsmLab.git ./source/third_party/fsmLab
 
 modules=(
     "./source/rsl_rl"

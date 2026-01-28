@@ -27,7 +27,8 @@ rsl_arg_cli.add_rsl_rl_args(parser)
 # append AppLauncher cli args
 AppLauncher.add_app_launcher_args(parser)
 args_cli = parser.parse_args()
-
+if args_cli.video:
+    args_cli.enable_cameras = True
 # launch omniverse app
 app_launcher = AppLauncher(args_cli)
 simulation_app = app_launcher.app
@@ -65,7 +66,7 @@ def main():
         video_kwargs = {
             "video_folder": os.path.join(log_dir, "videos"),
             "step_trigger": lambda step: step % args_cli.video_interval == 0,
-            "video_length": args_cli.length,
+            "video_length": args_cli.video_length,
             "disable_logger": True,
         }
         print("[INFO] Recording videos during training.")
