@@ -19,6 +19,7 @@ class SoccerTeamCfg:
         name: str = None
         init_pos: Tuple[float, float] = (0.0, 0.0)
         init_facing: Tuple[float, float, float] = (0.0, 0.0, 1.0) # Euler form
+        init_yaw: float = None # Explicit yaw in radians
         
         # General terms
         robot_cfg: ArticulationCfg = None
@@ -42,9 +43,15 @@ class SoccerTeamCfg:
             asset_init = player.robot_cfg.init_state
             # world position (x, y, z)
             pos = player.init_pos + (asset_init.pos[2],)
-            # only use xy to compute yaw
-            x, y = pos[0], pos[1]
-            yaw = np.arctan2(-y, -x)
+            
+            # Rotation
+            if player.init_yaw is not None:
+                yaw = player.init_yaw
+            else:
+                # only use xy to compute yaw (face origin)
+                x, y = pos[0], pos[1]
+                yaw = np.arctan2(-y, -x)
+            
             # yaw-only quaternion (w, x, y, z)
             rot = (np.cos(0.5 * yaw),0.0,0.0,np.sin(0.5 * yaw),)
             player.robot_cfg.init_state = asset_init.replace(pos=pos,rot=rot,)

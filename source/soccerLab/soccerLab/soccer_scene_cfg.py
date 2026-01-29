@@ -73,12 +73,14 @@ class SoccerSceneCfg(InteractiveSceneCfg):
             rigid_props=sim_utils.RigidBodyPropertiesCfg(
                 disable_gravity=False,
                 max_depenetration_velocity=5.0,
+                linear_damping=0.5,
+                angular_damping=0.5,
             ),
             collision_props=sim_utils.CollisionPropertiesCfg(
                 collision_enabled=True,
             ),
             mass_props=sim_utils.MassPropertiesCfg(
-                mass=0.3,
+                mass=0.43,
             ),
             joint_drive=None
         ),

@@ -17,7 +17,8 @@ import sys
 from isaaclab.app import AppLauncher
 
 # local imports
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../source")))
 import cli_args
 
 # add argparse arguments
@@ -66,17 +67,29 @@ from isaaclab.utils.dict import print_dict
 from isaaclab.utils.pretrained_checkpoint import get_published_pretrained_checkpoint
 from isaaclab_rl.rsl_rl import RslRlOnPolicyRunnerCfg, RslRlVecEnvWrapper, export_policy_as_jit, export_policy_as_onnx
 from isaaclab_tasks.utils import get_checkpoint_path, parse_env_cfg
+from isaaclab_tasks.utils.parse_cfg import load_cfg_from_registry
 
-import trackerTask.trackerLab  # noqa: F401
+import soccerTask.soccer  # noqa: F401
+import soccerTask.train  # noqa: F401
 
 
 def main():
     """Play with RSL-RL agent."""
     # parse configuration
-    env_cfg = parse_env_cfg(
-        args_cli.task, device=args_cli.device, num_envs=args_cli.num_envs, use_fabric=not args_cli.disable_fabric,
-        entry_point_key="play_env_cfg_entry_point"
-    )
+    # parse configuration
+    # load the default configuration
+    env_cfg = load_cfg_from_registry(args_cli.task, "play_env_cfg_entry_point")
+    # check that it is not a dict
+    if isinstance(env_cfg, dict):
+        raise RuntimeError(f"Configuration for the task: '{args_cli.task}' is not a class. Please provide a class.")
+
+    # device
+    env_cfg.sim.device = args_cli.device
+    # use fabric
+    env_cfg.sim.use_fabric = not args_cli.disable_fabric
+    # number of environments
+    if args_cli.num_envs is not None:
+        env_cfg.scene.num_envs = args_cli.num_envs
     agent_cfg: RslRlOnPolicyRunnerCfg = cli_args.parse_rsl_rl_cfg(args_cli.task, args_cli)
 
     # make a smaller scene for play

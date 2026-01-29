@@ -101,8 +101,7 @@ def main():
     
     
     env_cfg.viewer = ViewerCfg(
-        eye = (4.0, 4.0, 4.0),
-        # eye = (0.0, 0.0, 10.0),
+        eye = (0.0, -20.0, 10.0),
         lookat = (0.0, 0.0, 0.0),
         env_index = 20,
         origin_type = "asset_root",
