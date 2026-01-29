@@ -178,10 +178,10 @@ def randomize_joint_parameters(
 def reset_root_state_uniform_some_standing(
     env: ManagerBasedRLEnv,
     env_ids: torch.Tensor,
-    pose_range: dict[str, tuple[float, float]],
-    velocity_range: dict[str, tuple[float, float]],
-    standing_ratio: float,
-    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
+    pose_range: dict[str, tuple[float, float]] = {},
+    velocity_range: dict[str, tuple[float, float]] = {},
+    standing_ratio: float = 0.5,
+    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")
 ) -> None:
     """Reset the root state of the robot to a random pose and velocity.
     Some of the environments are set to standing, i.e, at default height with zero velocity and zero roll and pitch.
