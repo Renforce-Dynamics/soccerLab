@@ -7,7 +7,7 @@ import isaaclab.sim as sim_utils
 import isaaclab.terrains as terrain_gen
 from isaaclab.assets import ArticulationCfg, AssetBaseCfg
 from isaaclab.envs import ManagerBasedRLEnvCfg
-from isaaclab.envs import mdp
+from . import mdp
 from isaaclab.managers import CurriculumTermCfg as CurrTerm
 from isaaclab.managers import EventTermCfg as EventTerm
 from isaaclab.managers import ObservationGroupCfg as ObsGroup
@@ -80,10 +80,9 @@ class ObservationsCfg:
         )
         last_action = ObsTerm(func=mdp.last_action, clip=(-12, 12))
 
-        # Ball state observations (TODO: implement custom MDP functions)
-        # ball_pos_rel = ObsTerm(func=mdp.ball_pos_rel, params={"ball_asset_name": "ball"})
-        # ball_vel_rel = ObsTerm(func=mdp.ball_vel_rel, params={"ball_asset_name": "ball"})
-        # ball_vel_w = ObsTerm(func=mdp.ball_vel_w, params={"ball_asset_name": "ball"})
+        ball_pos_rel = ObsTerm(func=mdp.ball_pos_rel, params={"ball_asset_name": "ball"})
+        ball_vel_rel = ObsTerm(func=mdp.ball_vel_rel, params={"ball_asset_name": "ball"})
+        ball_vel_w = ObsTerm(func=mdp.ball_vel_w, params={"ball_asset_name": "ball"})
 
         # Target command
         ball_target_velocity = ObsTerm(
@@ -109,10 +108,9 @@ class ObservationsCfg:
         joint_vel_rel = ObsTerm(func=mdp.joint_vel_rel, scale=0.05)
         last_action = ObsTerm(func=mdp.last_action)
 
-        # Ball state (TODO: implement custom MDP functions)
-        # ball_pos_rel = ObsTerm(func=mdp.ball_pos_rel, params={"ball_asset_name": "ball"})
-        # ball_vel_rel = ObsTerm(func=mdp.ball_vel_rel, params={"ball_asset_name": "ball"})
-        # ball_vel_w = ObsTerm(func=mdp.ball_vel_w, params={"ball_asset_name": "ball"})
+        ball_pos_rel = ObsTerm(func=mdp.ball_pos_rel, params={"ball_asset_name": "ball"})
+        ball_vel_rel = ObsTerm(func=mdp.ball_vel_rel, params={"ball_asset_name": "ball"})
+        ball_vel_w = ObsTerm(func=mdp.ball_vel_w, params={"ball_asset_name": "ball"})
 
         # Target command
         ball_target_velocity = ObsTerm(
@@ -130,13 +128,11 @@ class ObservationsCfg:
 class RewardsCfg:
     """Reward terms for the MDP."""
 
-    # -- Task rewards
-    # TODO: Implement custom reward functions for ball velocity tracking
-    # track_ball_vel_xy = RewTerm(
-    #     func=mdp.track_ball_vel_xy_exp,
-    #     weight=1.0,
-    #     params={"command_name": "ball_target_velocity", "std": math.sqrt(0.25)},
-    # )
+    track_ball_vel_xy = RewTerm(
+        func=mdp.track_ball_vel_xy_exp,
+        weight=1.0,
+        params={"command_name": "ball_target_velocity", "std": math.sqrt(0.25)},
+    )
 
     # -- Robot stability rewards
     alive = RewTerm(func=mdp.is_alive, weight=0.15)
@@ -160,8 +156,7 @@ class TerminationsCfg:
     time_out = DoneTerm(func=mdp.time_out, time_out=True)
     base_height = DoneTerm(func=mdp.root_height_below_minimum, params={"minimum_height": 0.2})
     bad_orientation = DoneTerm(func=mdp.bad_orientation, params={"limit_angle": 0.8})
-    # TODO: Add ball out of bounds termination
-    # ball_out_of_bounds = DoneTerm(func=mdp.ball_out_of_bounds, params={"max_distance": 10.0})
+    ball_out_of_bounds = DoneTerm(func=mdp.ball_out_of_bounds, params={"max_distance": 10.0})
 
 
 @configclass
@@ -227,24 +222,21 @@ class EventCfg:
         },
     )
 
-    # TODO: Add ball reset event
-    # reset_ball = EventTerm(
-    #     func=mdp.reset_ball_state,
-    #     mode="reset",
-    #     params={
-    #         "position_range": {"x": (-1.0, 1.0), "y": (-1.0, 1.0), "z": (0.1, 0.3)},
-    #         "velocity_range": {"x": (0.0, 0.0), "y": (0.0, 0.0), "z": (0.0, 0.0)},
-    #     },
-    # )
+    reset_ball = EventTerm(
+        func=mdp.reset_ball_state,
+        mode="reset",
+        params={
+            "position_range": {"x": (-1.0, 1.0), "y": (-1.0, 1.0), "z": (0.1, 0.3)},
+            "velocity_range": {"x": (0.0, 0.0), "y": (0.0, 0.0), "z": (0.0, 0.0)},
+        },
+    )
 
 
 @configclass
 class CurriculumCfg:
     """Curriculum terms for the MDP."""
 
-    terrain_levels = CurrTerm(func=mdp.terrain_levels_vel)
-    # TODO: Add ball velocity curriculum
-    # ball_velocity_levels = CurrTerm(func=mdp.ball_velocity_cmd_levels)
+    ball_velocity_levels = CurrTerm(func=mdp.ball_velocity_cmd_levels)
 
 
 @configclass
@@ -280,7 +272,7 @@ class ShootingEnvCfg(ManagerBasedRLEnvCfg):
         # update sensor update periods
         # we tick all the sensors based on the smallest update period (physics update period)
         self.scene.contact_forces.update_period = self.sim.dt
-        self.scene.height_scanner.update_period = self.decimation * self.sim.dt
+  #      self.scene.height_scanner.update_period = self.decimation * self.sim.dt
 
         # check if terrain levels curriculum is enabled - if so, enable curriculum for terrain generator
         # this generates terrains with increasing difficulty and is useful for training

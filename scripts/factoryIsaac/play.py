@@ -17,7 +17,7 @@ if omni_isaac_lab_version < "0.21.0":
     parser.add_argument("--cpu", action="store_true", default=False, help="Use CPU pipeline.")
 parser.add_argument("--target", type=str, default=None, help="If use, direct point to the target ckpt")
 
-parser.add_argument("--num_envs", type=int, default=None, help="Number of environments to simulate.")
+parser.add_argument("--num_envs", type=int, default=32, help="Number of environments to simulate.")
 parser.add_argument("--task", type=str, default=None, help="Name of the task.")
 # parser.add_argument("--run", type=str, default=".*", help="Name of the run.")
 # parser.add_argument("--ckpt", type=str, default=".*", help="Name of the ckpt.")
