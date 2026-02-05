@@ -14,6 +14,7 @@ from dataclasses import MISSING
 import soccerLab.terrain as terrain_gen
 
 from robotlib.beyondMimic.robots.g1 import G1_CYLINDER_CFG
+from robotlib import ROBOTLIB_ASSETLIB_DIR
 
 SOCCER_GROUND_CFG = terrain_gen.TerrainGeneratorCfg(
     size=(8.0, 8.0),
@@ -67,7 +68,7 @@ class SoccerBallSceneCfg(InteractiveSceneCfg):
     ball = RigidObjectCfg(
         prim_path="{ENV_REGEX_NS}/ball",
         spawn=sim_utils.UrdfFileCfg(
-            asset_path="data/assets/assetslib/third_party/olympics/urdf/soccer.urdf",
+            asset_path=f"{ROBOTLIB_ASSETLIB_DIR}/third_party/olympics/urdf/soccer.urdf",
             fix_base=False,
             rigid_props=sim_utils.RigidBodyPropertiesCfg(
                 disable_gravity=False,

@@ -2,9 +2,9 @@ import gymnasium as gym
 from . import soccer_3v3
 
 
-# Register Unified Task
+# Register Robocup Soccer Task
 gym.register(
-    id="Loco-Unified-Soccer",
+    id="Robocup-Soccer",
     entry_point="isaaclab.envs:ManagerBasedRLEnv",
     disable_env_checker=True,
     kwargs={
