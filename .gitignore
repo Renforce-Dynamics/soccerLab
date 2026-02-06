@@ -171,4 +171,9 @@ source/robotlib
 dataset/
 
 test_env.yaml
+
+CLAUDE.md
+source/third_party/IsaacNPC
+
+data/assets/
 pyrightconfig.json

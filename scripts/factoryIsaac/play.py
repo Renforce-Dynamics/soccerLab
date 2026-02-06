@@ -17,13 +17,13 @@ if omni_isaac_lab_version < "0.21.0":
     parser.add_argument("--cpu", action="store_true", default=False, help="Use CPU pipeline.")
 parser.add_argument("--target", type=str, default=None, help="If use, direct point to the target ckpt")
 
-parser.add_argument("--num_envs", type=int, default=None, help="Number of environments to simulate.")
+parser.add_argument("--num_envs", type=int, default=32, help="Number of environments to simulate.")
 parser.add_argument("--task", type=str, default=None, help="Name of the task.")
 # parser.add_argument("--run", type=str, default=".*", help="Name of the run.")
 # parser.add_argument("--ckpt", type=str, default=".*", help="Name of the ckpt.")
 parser.add_argument("--seed", type=int, default=None, help="Seed used for the environment")
 parser.add_argument("--video", action="store_true", default=False, help="Record videos during playing.")
-parser.add_argument("--length", type=int, default=200, help="Length of the recorded video (in steps).")
+parser.add_argument("--length", type=int, default=1000, help="Length of the recorded video (in steps).")
 parser.add_argument("--rldevice", type=str, default="cuda:0", help="Device for rl")
 
 parser.add_argument("--collect", action="store_true", default=False, help="Record data during playing.")
@@ -151,17 +151,16 @@ def main():
     policy = runner.get_inference_policy(device=env.unwrapped.device)
 
     # reset environment
-    obs, _ = env.get_observations()
+    obs= env.get_observations()
 
     # export policy
-    export_model_dir = os.path.join(os.path.dirname(resume_path), "exported")
-    os.makedirs(export_model_dir, exist_ok=True)
-    torch.save(runner.alg.actor_critic, os.path.join(export_model_dir, "policy.pth"))
-    export_policy_as_onnx(runner.alg.actor_critic, export_model_dir, filename="policy.onnx")
+    # export_model_dir = os.path.join(os.path.dirname(resume_path), "exported")
+    # os.makedirs(export_model_dir, exist_ok=True)
+    # torch.save(runner.alg.actor_critic, os.path.join(export_model_dir, "policy.pth"))
+    # export_policy_as_onnx(runner.alg.actor_critic, export_model_dir, filename="policy.onnx")
     # rsl_arg_cli.export_policy_as_jit(
     #     rsl_arg_cli.InferencePolicy(runner.alg.actor_critic), 
-    #     # obs[0, :], 
-    #     export_model_dir, filename="policy.pt",
+    #     obs[0, :], export_model_dir, filename="policy.pt",
     #     device = env.device
     # )
     # print(f"[INFO]: Saving policy to: {export_model_dir}")

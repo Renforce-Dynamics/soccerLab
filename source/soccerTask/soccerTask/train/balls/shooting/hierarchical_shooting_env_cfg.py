@@ -14,7 +14,7 @@ from .shooting_env_cfg import (
     CurriculumCfg,
 )
 from isaaclab.envs import ManagerBasedRLEnvCfg
-from isaaclab.envs import mdp
+from . import mdp
 from isaaclab.managers import ObservationTermCfg as ObsTerm
 from isaaclab.managers import ObservationGroupCfg as ObsGroup
 from isaaclab.utils.noise import AdditiveUniformNoiseCfg as Unoise
