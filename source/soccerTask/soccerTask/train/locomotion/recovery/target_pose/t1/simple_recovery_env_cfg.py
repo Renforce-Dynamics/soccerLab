@@ -21,7 +21,6 @@ from ..recovery_env_cfg import (
     RewardsCfg,
     SceneCfg,
     TerminationsCfg,
-    ViewerCfg,
 )
 
 
@@ -77,21 +76,6 @@ class T1CommandsCfg(CommandsCfg):
 
 
 @configclass
-class T1TerminationsCfg(TerminationsCfg):
-    """T1-specific termination conditions for the simple recovery task."""
-
-    standing = DoneTerm(
-        func=mdp.standing,
-        params={
-            "asset_cfg": SceneEntityCfg("robot"),
-            "min_height": booster_t1.DEFAULT_TRUNK_HEIGHT * 0.8,
-            "sensor_cfg": SceneEntityCfg("height_measurement_sensor"),
-            "duration_s": 3.0,
-        },
-    )
-
-
-@configclass
 class T1SimpleRecoveryEnvCfg(SimpleRecoveryEnvCfg):
     """Simple stand-up recovery env specialized for the T1 robot."""
 
@@ -102,9 +86,6 @@ class T1SimpleRecoveryEnvCfg(SimpleRecoveryEnvCfg):
     commands: T1CommandsCfg = T1CommandsCfg()
 
     rewards: T1RewardsCfg = T1RewardsCfg()
-    terminations: T1TerminationsCfg = T1TerminationsCfg()
     events: EventCfg = EventCfg()
     curriculum: CurriculumCfg = CurriculumCfg()
-
-    viewer: ViewerCfg = ViewerCfg()
 

@@ -25,8 +25,6 @@ from ..agile_wbc.mdp.terrains import STAND_UP_ROUGH_TERRAIN_CFG
 
 FILE_DIR = pathlib.Path(__file__).parent
 
-REST_DURATION_S = 2.0
-
 
 @configclass
 class SceneCfg(InteractiveSceneCfg):
@@ -91,7 +89,8 @@ class ObservationsCfg:
         projected_gravity = ObsTerm(func=mdp.projected_gravity, noise=Unoise(n_min=-0.05, n_max=0.05))
         joint_pos = ObsTerm(func=mdp.joint_pos_rel, noise=Unoise(n_min=-0.01, n_max=0.01))
         joint_vel = ObsTerm(func=mdp.joint_vel_rel, scale=0.05, noise=Unoise(n_min=-1.5, n_max=1.5))
-        last_action = ObsTerm(func=mdp.last_action, clip=(-12, 12))
+        last_action = ObsTerm(func=mdp.last_action_masked)
+        post_reset_flag = ObsTerm(func=mdp.post_reset_flag)
 
         def __post_init__(self):
             self.enable_corruption = True
@@ -105,6 +104,8 @@ class ObservationsCfg:
         base_ang_vel = ObsTerm(func=mdp.base_ang_vel)
         joint_pos = ObsTerm(func=mdp.joint_pos_rel)
         joint_vel = ObsTerm(func=mdp.joint_vel_rel, scale=0.05)
+        last_action = ObsTerm(func=mdp.last_action_masked)
+        post_reset_flag = ObsTerm(func=mdp.post_reset_flag)
         base_height = ObsTerm(
             func=mdp.base_height_from_sensor,
             params={"sensor_cfg": SceneEntityCfg("height_measurement_sensor")},
@@ -153,13 +154,20 @@ class CommandsCfg:
 class RewardsCfg:
     """Minimal rewards for stand-up recovery."""
 
-    # task terms
     target_body_pos = RewTerm(
         func=mdp.target_body_pos_error_exp,
         weight=1.0,
         params={
             "command_name": "target_pose",
             "std": 0.3,
+        },
+    )
+    target_body_height = RewTerm(
+        func=mdp.target_body_height_error_exp,
+        weight=1.0,
+        params={
+            "command_name": "target_pose",
+            "std": 0.1,
         },
     )
     base_height = RewTerm(
@@ -176,18 +184,14 @@ class RewardsCfg:
         weight=-1.0,
         params={"asset_cfg": SceneEntityCfg("robot", body_names=["Trunk"])},
     )
-
-
     # Aux
-    action_l2 = RewTerm(func=mdp.action_l2_if_actor_active, weight=-0.05, params={"rest_duration_s": REST_DURATION_S})
+    action_l2 = RewTerm(func=mdp.action_l2, weight=-0.05)
     joint_torques_l2 = RewTerm(func=mdp.joint_torques_l2, weight=-1.0e-5)
-
     root_acc = RewTerm(
         func=mdp.root_acc_l2,  # type: ignore
-        weight=-5e-2,
+        weight=-5e-4,
         params={"asset_cfg": SceneEntityCfg("robot")},
     )
-    
     feet_slide = RewTerm(
         func=mdp.feet_slide,
         weight=-0.2,
@@ -196,7 +200,6 @@ class RewardsCfg:
             "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*foot_link.*"),
         },
     )
-
 
 
 @configclass
@@ -212,29 +215,18 @@ class EventCfg:
     """Reset events to initialize states (including fallen poses)."""
 
     reset_base = EventTerm(
-        func=mdp.reset_root_state_uniform_some_standing,
+        func=mdp.reset_root_state_uniform,
         mode="reset",
         params={
-            "standing_ratio": 0.2,
-            "pose_range": {
-                # start from a pose range close to the nominal initial state
+            "pose_range": {"x": (-0.5, 0.5), "y": (-0.5, 0.5), "yaw": (-3.14, 3.14)},
+            "velocity_range": {
                 "x": (0.0, 0.0),
                 "y": (0.0, 0.0),
                 "z": (0.0, 0.0),
-                "yaw": (-math.radians(20), math.radians(20)),
-                "roll": (-math.radians(10), math.radians(10)),
-                "pitch": (-math.radians(10), math.radians(10)),
+                "roll": (0.0, 0.0),
+                "pitch": (0.0, 0.0),
+                "yaw": (0.0, 0.0),
             },
-            "velocity_range": {
-                # smaller initial velocity range; curriculum will expand this
-                "x": (-1.0, 1.0),
-                "y": (-1.0, 1.0),
-                "z": (0.0, 0.0),
-                "roll": (-1.0, 1.0),
-                "pitch": (-1.0, 1.0),
-                "yaw": (-1.0, 1.0),
-            },
-            "asset_cfg": SceneEntityCfg("robot", body_names=[".*foot_link.*"]),
         },
     )
 
@@ -246,66 +238,16 @@ class EventCfg:
             "velocity_range": (-1.0, 1.0),
         },
     )
+    
+    disable_robot_joint_actions = EventTerm(
+        func=mdp.disable_joints,
+        mode="pre_sim_step"
+    )
 
 
 @configclass
 class CurriculumCfg:
-    """Curriculum terms for the simple stand-up MDP."""
-
-    reset_pose_curriculum = CurrTerm(
-        func=mdp.reset_pose_curriculum,
-        params={
-            # initial ranges (close to reset_base) as part of curriculum state
-            "init_pose_range": {
-                "x": (0.0, 0.0),
-                "y": (0.0, 0.0),
-                "z": (0.0, 0.0),
-                "yaw": (-math.radians(20), math.radians(20)),
-                "roll": (-math.radians(10), math.radians(10)),
-                "pitch": (-math.radians(10), math.radians(10)),
-            },
-            "init_velocity_range": {
-                "x": (-1.0, 1.0),
-                "y": (-1.0, 1.0),
-                "z": (0.0, 0.0),
-                "roll": (-1.0, 1.0),
-                "pitch": (-1.0, 1.0),
-                "yaw": (-1.0, 1.0),
-            },
-            # target ranges the curriculum will move toward
-            "pose_range": {
-                "x": (0.0, 0.0),
-                "y": (0.0, 0.0),
-                "z": (0.0, 0.0),
-                "yaw": (-math.pi, math.pi),
-                "roll": (-math.radians(30), math.radians(30)),
-                "pitch": (-math.radians(30), math.radians(30)),
-            },
-            "velocity_range": {
-                "x": (-3.0, 3.0),
-                "y": (-3.0, 3.0),
-                "z": (0.0, 0.0),
-                "roll": (-3.0, 3.0),
-                "pitch": (-3.0, 3.0),
-                "yaw": (-3.0, 3.0),
-            },
-            "alpha": 0.05,
-            # use the main task reward as curriculum signal
-            "reward_term_name": "target_body_pos",
-        },
-    )
-
-@configclass
-class ViewerCfg:
-    """Simple viewer configuration."""
-
-    eye: tuple[float, float, float] = (0.0, -6.0, 3.0)
-    lookat: tuple[float, float, float] = (0.0, 0.0, 0.0)
-    cam_prim_path: str = "/OmniverseKit_Persp"
-    resolution: tuple[int, int] = (1280, 720)
-    origin_type = "asset_root"
-    asset_name: str = "robot"
-    env_index: int = 0
+    pass
 
 
 @configclass
@@ -318,7 +260,10 @@ class SimpleRecoveryEnvCfg(ManagerBasedRLEnvCfg):
     - uses a smaller set of observations and rewards
     """
 
-    scene: SceneCfg = SceneCfg(num_envs=2048, env_spacing=2.5)
+    # Duration of the reset/rest phase in seconds
+    rest_duration_s: float = 2.0
+
+    scene: SceneCfg = SceneCfg(num_envs=4096, env_spacing=2.5)
 
     observations: ObservationsCfg = ObservationsCfg()
     actions: ActionsCfg = ActionsCfg()
@@ -329,7 +274,6 @@ class SimpleRecoveryEnvCfg(ManagerBasedRLEnvCfg):
     events: EventCfg = EventCfg()
     curriculum: CurriculumCfg = CurriculumCfg()
 
-    viewer: ViewerCfg = ViewerCfg()
 
     def __post_init__(self):
         super().__post_init__()
