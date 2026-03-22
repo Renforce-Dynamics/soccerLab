@@ -101,7 +101,7 @@ def main():
     
     
     env_cfg.viewer = ViewerCfg(
-        eye = (0.0, -20.0, 10.0),
+        eye = (0.0, -5.0, 5.0),
         lookat = (0.0, 0.0, 0.0),
         env_index = 20,
         origin_type = "asset_root",
@@ -112,9 +112,10 @@ def main():
     # if args_cli.determine:
     #     set_determine_reset(env_cfg)
     
-    # env_cfg.commands.base_velocity.ranges.lin_vel_x = (-0.8, -0.8)
-    # env_cfg.commands.base_velocity.ranges.lin_vel_y = (0.0, 0.0)
-    # env_cfg.commands.base_velocity.ranges.ang_vel_z = (0.0, 0.0)
+    env_cfg.commands.base_velocity.ranges.lin_vel_x = (0.8, 0.8)
+    env_cfg.commands.base_velocity.ranges.lin_vel_y = (0.0, 0.0)
+    env_cfg.commands.base_velocity.ranges.ang_vel_z = (0.0, 0.0)
+    env_cfg.curriculum = None
     
     # env_cfg.commands.base_velocity.debug_vis = False
     # env_cfg.scene.height_scanner.debug_vis = False
@@ -151,19 +152,19 @@ def main():
     policy = runner.get_inference_policy(device=env.unwrapped.device)
 
     # reset environment
-    obs= env.get_observations()
+    obs, _ = env.get_observations()
 
     # export policy
-    # export_model_dir = os.path.join(os.path.dirname(resume_path), "exported")
-    # os.makedirs(export_model_dir, exist_ok=True)
-    # torch.save(runner.alg.actor_critic, os.path.join(export_model_dir, "policy.pth"))
-    # export_policy_as_onnx(runner.alg.actor_critic, export_model_dir, filename="policy.onnx")
-    # rsl_arg_cli.export_policy_as_jit(
-    #     rsl_arg_cli.InferencePolicy(runner.alg.actor_critic), 
-    #     obs[0, :], export_model_dir, filename="policy.pt",
-    #     device = env.device
-    # )
-    # print(f"[INFO]: Saving policy to: {export_model_dir}")
+    export_model_dir = os.path.join(os.path.dirname(resume_path), "exported")
+    os.makedirs(export_model_dir, exist_ok=True)
+    torch.save(runner.alg.actor_critic, os.path.join(export_model_dir, "policy.pth"))
+    export_policy_as_onnx(runner.alg.actor_critic, export_model_dir, filename="policy.onnx")
+    rsl_arg_cli.export_policy_as_jit(
+        rsl_arg_cli.InferencePolicy(runner.alg.actor_critic), 
+        obs[0, :], export_model_dir, filename="policy.pt",
+        device = env.device
+    )
+    print(f"[INFO]: Saving policy to: {export_model_dir}")
 
 
     pbar = tqdm.tqdm(range(args_cli.length)) if args_cli.length>0  else tqdm.tqdm()
@@ -181,11 +182,6 @@ def main():
 
             step += 1
             pbar.update() 
-            if args_cli.collect:
-                # trans = [obs.data, actions.data, rewards.data, dones.data, ppo_runner.alg.actor_critic.laction.data]
-                trans = [obs.data, actions.data, rewards.data, dones.data]
-                with open(output_file, 'ab') as f:
-                    pickle.dump(trans, f)
             if args_cli.length > 0 and args_cli.length < step:
                 break
 

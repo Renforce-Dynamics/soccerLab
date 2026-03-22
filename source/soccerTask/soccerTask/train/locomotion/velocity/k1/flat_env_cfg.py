@@ -4,7 +4,7 @@ from isaaclab.managers import SceneEntityCfg
 from isaaclab.sensors import RayCasterCfg, patterns
 from ..velocity_env_cfg import RobotEnvCfg as BaseRobotEnvCfg
 from ..velocity_env_cfg import RobotPlayEnvCfg as BaseRobotPlayEnvCfg
-from robotlib.beyondMimic.robots.k1 import K1_CFG, K1_ACTION_SCALE
+from robotlib.beyondMimic.robots.booster import BOOSTER_K1_CFG, K1_ACTION_SCALE
 from locomotion_rl_lab.locomotion import mdp
 
 @configclass
@@ -12,7 +12,7 @@ class RobotEnvCfg(BaseRobotEnvCfg):
     def __post_init__(self):
         super().__post_init__()
         # Override robot
-        self.scene.robot = K1_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
+        self.scene.robot = BOOSTER_K1_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
         
         # Override action scale
         self.actions.JointPositionAction.scale = K1_ACTION_SCALE
