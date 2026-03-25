@@ -19,6 +19,7 @@ class PIPLUSFlatEnvCfg(TrackingEnvCfg):
 
         self.scene.robot = PI_PLUS_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
         self.actions.joint_pos.scale = PI_PLUS_ACTION_SCALE
+        self.commands.motion.motion_file = "data/dataset/pi/stand1.npz"
         self.commands.motion.anchor_body_name = "base_link"
         self.commands.motion.body_names = [
             "base_link",
