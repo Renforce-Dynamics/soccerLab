@@ -1,17 +1,19 @@
-# ⚽ SoccerLab: A Robotics Soccer Platform Built on IsaacLab
+# ⚽ SoccerLab: A Full-Stack Humanoid Soccer Platform
 
-**SoccerLab** is a specialized extension built on the [NVIDIA IsaacLab](https://www.google.com/search?q=https://github.com/NVIDIA-Omniverse/IsaacLab) framework, designed for developing, training, and deploying advanced control strategies for legged robots in a dynamic, multi-agent soccer environment.
+**SoccerLab** is a full-stack humanoid soccer platform spanning **recovery → locomotion → atomic skills → multi-agent composition**. It runs on both [NVIDIA IsaacLab](https://github.com/isaac-sim/IsaacLab) (PhysX) and [mjlab](https://github.com/mujocolab/mjlab) (MuJoCo-Warp) backends, with a shared Finite State Machine (`fsmLab`) layer that composes learned skills into team-level play.
 
-The platform's core philosophy centers around a **Finite State Machine (FSM)**-driven architecture, enabling seamless, high-level skill switching for complex tasks like chasing, shooting, and defense.
+> This repo is under active development. Backend matrix: IsaacLab tasks live under `source/soccerTask/`; mjlab tasks under `source/soccer_tasks_mjlab/`.
 
-> This repo is under developing , hence not runnable yet
+## 🎬 Full-Stack Capabilities
 
-## 🎬 Skill Demos
+From getting back up off the floor to scoring a goal — every layer of a soccer humanoid, in one repo.
 
-| G1 Kicking (AMP) | G1 Dribbling — Train | G1 Dribbling — Play |
-| :---: | :---: | :---: |
-| <img src="docs/assets/kick.gif" alt="G1 kicking" width="100%"> | <img src="docs/assets/dribble_train.gif" alt="dribbling train" width="100%"> | <img src="docs/assets/dribble_play.gif" alt="dribbling play" width="100%"> |
-| Adversarial Motion Priors–guided kick skill ported from [G1_kicking](https://github.com/Ethan-Li-k/G1_kicking) | RSL-RL PPO dribbling training ([BackupDribbling](https://github.com/Ethan-Li-k/BackupDribbling)) | Trained dribbling policy at play time |
+| 🛟 Recovery | 🦶 Kicking (AMP) | ⚽ Dribbling — Train | 🎮 Dribbling — Play |
+| :---: | :---: | :---: | :---: |
+| <img src="docs/assets/standup.gif" alt="G1 standup" width="100%"> | <img src="docs/assets/kick.gif" alt="G1 kicking" width="100%"> | <img src="docs/assets/dribble_train.gif" alt="dribbling train" width="100%"> | <img src="docs/assets/dribble_play.gif" alt="dribbling play" width="100%"> |
+| Fall-recovery / standup via PBMP policy on MuJoCo (G1, courtesy of [Arcueid](https://github.com/Renforce-Dynamics) — RA-L 2026 submission) | Adversarial Motion Priors–guided kick skill, ported from [G1_kicking](https://github.com/Ethan-Li-k/G1_kicking) | RSL-RL PPO dribbling training, from [BackupDribbling](https://github.com/Ethan-Li-k/BackupDribbling) | Trained dribbling policy at play time |
+
+> Locomotion (velocity tracking on flat / rough terrain) ships out-of-the-box via mjlab's bundled `Mjlab-Velocity-Flat-Unitree-G1` baseline.
 
 ## 🌟 Key Features
 
