@@ -170,7 +170,7 @@ source/fsmLab
 source/robotlib
 
 # Vendored upstream (installed editable; tracked in its own repo)
-source/beyondAMP_new/
+source/beyondAMP/
 
 dataset/
 

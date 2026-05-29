@@ -31,10 +31,10 @@ Pulled-in versions (will upgrade your system if older):
 ### 1.2 beyondAMP (mjlab backend + AMP runner)
 
 beyondAMP ships both an IsaacLab and an mjlab backend in one repo. We
-vendor it under `source/beyondAMP_new/` so the patches stay reproducible:
+vendor it under `source/beyondAMP/` so the patches stay reproducible:
 
 ```bash
-cd soccerLab/source/beyondAMP_new
+cd soccerLab/source/beyondAMP
 pip install -e source/beyondAMP source/amp_tasks_mjlab source/rsl_rl_amp
 ```
 
@@ -235,7 +235,7 @@ the mjlab backend. All three are fixed on `master` of
 | `cee88cd` | `modules/amp_discriminator.py:69` | `d` / `amp_reward` returned shape `[N,1]`; runner consumed them as `[N]`, silently broadcasting to `[N,N]` during reward accumulation. Both now `.squeeze()`. |
 | `cee88cd` | `runners/amp_on_policy_runner.py:177–197` | `log()` assumed every `ep_infos` dict carried the same keys; mjlab emits per-step dicts with varying keys (reward terms only appear on episode end). Now collects the union of keys and skips per-dict misses. |
 
-If you sync `source/beyondAMP_new/` from upstream you'll get these for
+If you sync `source/beyondAMP/` from upstream you'll get these for
 free; if you pin an older revision you'll need to cherry-pick.
 
 ---
@@ -326,4 +326,4 @@ each.
 | List registered mjlab tasks | `python -c "from mjlab.tasks.registry import list_tasks; [print(t) for t in list_tasks()]"` |
 | Train dribble (smoke) | `python scripts/factoryMjlab/train.py Soccer-Mjlab-Dribble-Flat-T1 --headless --num_envs 64 --agent.max-iterations 50` |
 | Train kick bootstrap (smoke) | `python scripts/factoryMjlab/train.py Soccer-Mjlab-Kick-Bootstrap-G1 --headless --num_envs 64 --agent.max-iterations 30` |
-| Reinstall after upstream beyondAMP sync | `cd source/beyondAMP_new && git pull && pip install -e source/beyondAMP source/amp_tasks_mjlab source/rsl_rl_amp` |
+| Reinstall after upstream beyondAMP sync | `cd source/beyondAMP && git pull && pip install -e source/beyondAMP source/amp_tasks_mjlab source/rsl_rl_amp` |
