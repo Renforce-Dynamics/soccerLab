@@ -6,6 +6,13 @@ The platform's core philosophy centers around a **Finite State Machine (FSM)**-d
 
 > This repo is under developing , hence not runnable yet
 
+## 🎬 Skill Demos
+
+| G1 Kicking (AMP) | G1 Dribbling — Train | G1 Dribbling — Play |
+| :---: | :---: | :---: |
+| <img src="docs/assets/kick.gif" alt="G1 kicking" width="100%"> | <img src="docs/assets/dribble_train.gif" alt="dribbling train" width="100%"> | <img src="docs/assets/dribble_play.gif" alt="dribbling play" width="100%"> |
+| Adversarial Motion Priors–guided kick skill ported from [G1_kicking](https://github.com/Ethan-Li-k/G1_kicking) | RSL-RL PPO dribbling training ([BackupDribbling](https://github.com/Ethan-Li-k/BackupDribbling)) | Trained dribbling policy at play time |
+
 ## 🌟 Key Features
 
   * **FSM-Driven Control:** Implement modular and robust high-level strategies through parallel state machines (`fsmLab`).
