@@ -305,9 +305,8 @@ each.
 ## 9. Known gaps
 
 - **Standup / recovery policy** is **not** in this repo. The GIF in the
-  README is courtesy of arcueid (Renforce-Dynamics PBMP, RA-L 2026
-  submission). To stand up an end-to-end "fall → recover → kick" FSM
-  demo we still need that checkpoint.
+  README is from an external standup policy. To stand up an end-to-end
+  "fall → recover → kick" FSM demo we still need that checkpoint.
 - **Only one kick motion clip** (`wo_cf_shoot_74_06.npz`). For varied
   kick directions / power, more clips would need to be added under
   `data/datasets/g1_kick_skill/`.

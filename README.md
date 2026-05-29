@@ -11,7 +11,7 @@ From getting back up off the floor to scoring a goal — every layer of a soccer
 | 🛟 Recovery | 🦶 Kicking (AMP) | ⚽ Dribbling — Train | 🎮 Dribbling — Play |
 | :---: | :---: | :---: | :---: |
 | <img src="docs/assets/standup.gif" alt="G1 standup" width="100%"> | <img src="docs/assets/kick.gif" alt="G1 kicking" width="100%"> | <img src="docs/assets/dribble_train.gif" alt="dribbling train" width="100%"> | <img src="docs/assets/dribble_play.gif" alt="dribbling play" width="100%"> |
-| Fall-recovery / standup via PBMP policy on MuJoCo (G1, courtesy of [Arcueid](https://github.com/Renforce-Dynamics) — RA-L 2026 submission) | Adversarial Motion Priors–guided kick skill, ported from [G1_kicking](https://github.com/Ethan-Li-k/G1_kicking) | RSL-RL PPO dribbling training, from [BackupDribbling](https://github.com/Ethan-Li-k/BackupDribbling) | Trained dribbling policy at play time |
+| Fall-recovery / standup policy on MuJoCo (G1) | Adversarial Motion Priors–guided kick skill, ported from [G1_kicking](https://github.com/Ethan-Li-k/G1_kicking) | RSL-RL PPO dribbling training, from [BackupDribbling](https://github.com/Ethan-Li-k/BackupDribbling) | Trained dribbling policy at play time |
 
 > Locomotion (velocity tracking on flat / rough terrain) ships out-of-the-box via mjlab's bundled `Mjlab-Velocity-Flat-Unitree-G1` baseline.
 >
