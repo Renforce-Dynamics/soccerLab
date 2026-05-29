@@ -72,20 +72,47 @@ def main() -> None:
     print(f"[INFO] num_envs={env_cfg.scene.num_envs}")
     print(f"[INFO] Logging to: {log_dir}")
 
+    # Detect AMP task by checking if rl_cfg is an AMPRunnerCfg
+    is_amp_task = False
+    try:
+        from beyondAMP.mjlab.rsl_rl import AMPRunnerCfg
+        is_amp_task = isinstance(rl_cfg, AMPRunnerCfg)
+    except ImportError:
+        pass
+
     # Create environment
     env = ManagerBasedRlEnv(cfg=env_cfg, device=device)
-    env = RslRlVecEnvWrapper(env, clip_actions=rl_cfg.clip_actions)
 
-    # Dump configs
-    dump_yaml(log_dir / "params" / "env.yaml", asdict(env_cfg))
-    dump_yaml(log_dir / "params" / "agent.yaml", asdict(rl_cfg))
+    if is_amp_task:
+        # AMP path: use AMPEnvWrapper + AMPOnPolicyRunner
+        from beyondAMP.mjlab.rsl_rl import AMPEnvWrapper
+        from rsl_rl_amp.runners.amp_on_policy_runner import AMPOnPolicyRunner
 
-    # Create runner
-    runner_cls = load_runner_cls(args.task_id)
-    if runner_cls is None:
-        runner_cls = MjlabOnPolicyRunner
+        print("[INFO] AMP task detected — using AMPEnvWrapper + AMPOnPolicyRunner")
+        env = AMPEnvWrapper(
+            env,
+            clip_actions=rl_cfg.clip_actions,
+            motion_dataset=rl_cfg.amp_data,
+        )
 
-    runner = runner_cls(env, asdict(rl_cfg), str(log_dir), device)
+        # Dump configs
+        dump_yaml(log_dir / "params" / "env.yaml", asdict(env_cfg))
+        dump_yaml(log_dir / "params" / "agent.yaml", asdict(rl_cfg))
+
+        runner = AMPOnPolicyRunner(env, asdict(rl_cfg), log_dir=str(log_dir), device=device)
+    else:
+        # Standard path: RslRlVecEnvWrapper + stock runner
+        env = RslRlVecEnvWrapper(env, clip_actions=rl_cfg.clip_actions)
+
+        # Dump configs
+        dump_yaml(log_dir / "params" / "env.yaml", asdict(env_cfg))
+        dump_yaml(log_dir / "params" / "agent.yaml", asdict(rl_cfg))
+
+        runner_cls = load_runner_cls(args.task_id)
+        if runner_cls is None:
+            runner_cls = MjlabOnPolicyRunner
+
+        runner = runner_cls(env, asdict(rl_cfg), str(log_dir), device)
 
     # Resume from checkpoint
     if args.resume and args.checkpoint:
