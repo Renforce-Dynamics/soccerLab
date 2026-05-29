@@ -14,6 +14,8 @@ From getting back up off the floor to scoring a goal — every layer of a soccer
 | Fall-recovery / standup via PBMP policy on MuJoCo (G1, courtesy of [Arcueid](https://github.com/Renforce-Dynamics) — RA-L 2026 submission) | Adversarial Motion Priors–guided kick skill, ported from [G1_kicking](https://github.com/Ethan-Li-k/G1_kicking) | RSL-RL PPO dribbling training, from [BackupDribbling](https://github.com/Ethan-Li-k/BackupDribbling) | Trained dribbling policy at play time |
 
 > Locomotion (velocity tracking on flat / rough terrain) ships out-of-the-box via mjlab's bundled `Mjlab-Velocity-Flat-Unitree-G1` baseline.
+>
+> 📘 mjlab port details — install, asset choices, API mapping, upstream patches, smoke-train results — are in [`docs/mjlab_port.md`](docs/mjlab_port.md).
 
 ## 🌟 Key Features
 
